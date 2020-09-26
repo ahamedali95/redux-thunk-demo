@@ -1,0 +1,1 @@
+Refer to `redux-thunk` docs for more information: https://github.com/reduxjs/redux-thunk

@@ -1,28 +1,44 @@
 import React from 'react';
-import Async from '../utilities/Async';
+import { connect } from 'react-redux';
+import {fetchPokemons} from '../actions/asyncActions';
 
 class Home extends React.Component {
-  static *asyncGenerator() {
-    const response = yield fetch('https://pokeapi.co/api/v2/pokemon');
-    const json = yield response.json();
-
-    return json;
-  };
-  
   componentDidMount() {
-    const getData = Async(Home.asyncGenerator);
+    this.props.fetchPokemons();
+  }
 
-    console.log(getData().then(d => console.log(d)));
+  getPokemons() {
+    return (
+      <ul>
+        {
+          this.props.pokemons.map((pokemon, index) => {
+            return (<li key={index}>{pokemon.name}</li>);
+          })
+        }
+      </ul>
+    )
   }
 
   render() {
     return (
       <>
         <h1>WELCOME HOME</h1>
+        {
+          this.props.isLoading &&
+          <p>Loading Pokemons....</p>
+        }
+        {this.getPokemons()}
       </>
     );
   }
 }
 
-export default Home;
+const mapStateToProps = state => {
+  return {
+    isLoading: state.isLoading,
+    pokemons: state.pokemons
+  };
+};
+
+export default connect(mapStateToProps, {fetchPokemons})(Home);
 
